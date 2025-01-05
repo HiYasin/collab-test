@@ -1,76 +1,174 @@
-# **Lingo Bingo** - A 72 hour full stack project by Me
+# Axios
 
+Created: December 23, 2024 5:12 PM
+
+# Documentation
+
+[Getting Started | Axios Docs](https://axios-http.com/docs/intro)
+
+# Data fetching
+
+Without Axios
+
+```jsx
+import { useState, useEffect } from "react";
+const Phones = () => {
+    const [phones, setPhones] = useState([]);
+    useEffect(() => {
+        fetch('https://openapi.programming-hero.com/api/phones?search=iphone')
+           .then(response => response.json())
+           .then(data => setPhones(data.data));
+    }, []);
+    console.log(phones);
+    return (
+        <div>
+            <h3>Phones: {phones.length}</h3>
+        </div>
+    );
+};
+
+export default Phones;
 ```
-lingo-bingo/
-├── public/                # Public folder for static assets
-│   ├── index.html         # Main HTML file
-│   ├── logo.png           # Logo image
-│   └── vite.svg           # Vite logo
-├── src/                   # Source folder for app components and logic
-│   ├── assets/
-│   ├── icons/              # Icon assets
-│   │   ├── forgetPasswordIcon.png  # Icon for "Forget Password"
-│   │   ├── logoIcon.png            # Logo icon
-│   │   ├── signinIcon.png          # Sign-in icon
-│   │   └── userLogout.png          # Logout icon
-│   ├── images/             # Image assets
-│   │   └── myPhoto.jpg              # Sample photo
-│   ├── sounds/             # Sound assets
-│   │   └── click.mp3                # Click sound effect
-│   └── react.svg           # React SVG file
-|   | 
-│   ├── components/        # Reusable components
-│   │   ├── Buttons/       # Button-related components
-│   │   │   └── LogoutWithImage.jsx # Button for logout with image
-│   │   ├── Home/          # Components specific to the Home page
-│   │   │   ├── AboutSection.jsx
-│   │   │   ├── ImageSlider.jsx
-│   │   │   ├── SuccessSection.jsx
-│   │   │   ├── TestimonialsSection.jsx
-│   │   ├── Banner.jsx
-│   │   ├── cardShow.jsx
-│   │   ├── Footer.jsx
-│   │   ├── LetsLearn.jsx
-│   │   ├── LoadingUI.jsx
-│   │   ├── Modal.jsx
-│   │   ├── NavBar.jsx
-│   │   ├── VocabularyCard.jsx
-│   │   └── VocabularyDetails.jsx
-│   ├── contexts/          # Context API-related files
-│   │   └── AuthProvider.jsx # Authentication provider for global state
-│   ├── hooks/             # Custom React hooks
-│   │   ├── Firebase.Config.js # Firebase configuration
-│   │   └── useAuth.js     # Hook for authentication logic
-│   ├── layout/            # Layout components
-│   │   ├── HomeLayout.jsx # Layout for home page
-│   │   └── root.jsx       # Root layout component
-│   ├── pages/             # Page components
-│   │   ├── AboutUs.jsx    # About Us page
-│   │   ├── ContactUs.jsx  # Contact Us page
-│   │   ├── Lesson.jsx     # Lesson details page
-│   │   ├── Login.jsx      # Login page
-│   │   ├── MyProfile.jsx  # Profile page
-│   │   ├── PasswordReset.jsx # Password reset page
-│   │   ├── StartLearning.jsx # Start learning page
-│   │   ├── Tutorials.jsx  # Tutorials page
-│   │   ├── UpdateProfile.jsx # Profile update page
-│   │   └── WrongPage.jsx  # 404 Not Found page
-│   ├── routes/            # Routing logic
-│   │   ├── PrivateProvider.jsx # Protected route handling
-│   │   └── router.jsx     # Main routing logic
-│   ├── App.jsx            # Root application component
-│   ├── App.css            # Global styles
-│   ├── main.jsx           # Entry point for the app
-│   └── config.js          # Additional configuration
-├── .env                   # Environment variables
-├── .firebaserc            # Firebase configuration file
-├── .gitignore             # Git ignore file
-├── eslint.config.js       # ESLint configuration
-├── firebase.json          # Firebase project settings
-├── index.html             # Main HTML file for Vite
-├── package.json           # Project dependencies and metadata
-├── postcss.config.js      # PostCSS configuration
-├── README.md              # Documentation for the project
-├── tailwind.config.js     # Tailwind CSS configuration
-└── vite.config.js         # Vite configuration
+
+With Axios
+
+```jsx
+import axios from "axios";
+import { useState, useEffect } from "react";
+const Phones = () => {
+    const [phones, setPhones] = useState([]);
+    useEffect(() => {
+        axios.get('https://openapi.programming-hero.com/api/phones?search=iphone')
+           .then(response => setPhones(response.data.data))
+    }, []);
+    return (
+        <div>
+            <h3>Phones: {phones.length}</h3>
+        </div>
+    );
+};
+
+export default Phones;
+```
+
+Demo project
+
+[https://github.com/HiYasin/Axios](https://github.com/HiYasin/Axios)
+
+# API Calling
+
+API call in POST method using fetch().
+
+```jsx
+fetch('http://localhost:5000/user',{
+	method: 'POST',
+	headers: {
+		'content-type': 'application/json'
+	},
+	body: JSON.stringify(loginInfo)
+})
+.then(res => res.json())
+.then(data => {
+  console.log(data.insertedId);
+  alert('User successfully added');
+  event.target.reset();
+});
+```
+
+API call in POST method using axios.
+
+```jsx
+axios.post('http://localhost:5000/user', user)
+.then(res => {
+  console.log(res.data.insertedId);
+  alert('User successfully added');
+  event.target.reset();
+});
+```
+
+# Create axios instance as react hook for API call
+
+1. Create custom hook for axios.
+    
+    `useAxiosSecure.jsx`
+    
+    ```jsx
+    import axios from 'axios';
+    
+    const axiosInstance = axios.create({
+        baseURL: 'http://localhost:5000', // Replace with your API base URL
+        withCredentials: true,
+    });
+    const useAxiosSecure = () => {
+        return axiosInstance;
+    };
+    
+    export default useAxiosSecure;
+    ```
+    
+2. Use custom hook. Don’t forget to import before use.
+    
+    ```jsx
+    useEffect(()=>{
+    //using conventional fetch
+    	fetch(`http://localhost:5000/job-posts?email=${user.email}`,
+    	{credentials: 'include'})
+    	.then(res => res.json())
+    	.then(data => setJobs(data))
+    	.catch(err => console.log(err));
+    
+    //using axios interceptor
+    	axios.get(`http://localhost:5000/job-posts?email=${user.email}`,
+    	{withCredentials: true})
+    	.then(res => setJobs(res.data))
+    	.catch(err => console.log(err.response));
+    	
+    //using useAxiosSecure custom hook
+    	axiosSecure.get(`/job-posts?email=${user.email}`)
+    	.then(res => setJobs(res.data))
+    	.catch(err => console.log(err.response));
+    }, []);
+    ```
+    
+
+# Axios interceptor
+
+Make secure axios instance to block unauthorized access using axios interceptor.
+
+```jsx
+
+import axios from 'axios';
+import { useContext, useEffect } from 'react';
+import { AuthContext } from '../context/AuthProvider';
+import { useNavigate } from 'react-router-dom';
+
+const axiosInstance = axios.create({
+    baseURL: 'http://localhost:5000', // Replace with your API base URL
+    withCredentials: true,
+});
+const useAxiosSecure = () => {
+    const { signOutUser } = useContext(AuthContext);
+    const navigate = useNavigate();
+
+    useEffect(()=>{
+        axiosInstance.interceptors.request(
+            reponse => reponse,
+            error => {
+                if( error.status === 401 || error.status === 403){
+                    signOutUser()
+                    .then(()=>{
+                        navigate('/login');
+                    })
+                    .catch(err => console.log(err));
+                    
+                }
+                return Promise.reject(error);
+            }
+        );
+    }, [])
+
+    return axiosInstance;
+};
+
+export default useAxiosSecure;
 ```
